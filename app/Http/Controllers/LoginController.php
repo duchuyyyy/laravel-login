@@ -6,7 +6,6 @@ use App\Http\Common\MessageConstant;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -20,7 +19,7 @@ class LoginController extends Controller
         $user = $this->findUserByEmail($request->email);
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            
+
             return $this->successWithData($user);
         } else {
             throw new BadRequestHttpException(MessageConstant::INCORRECT_PASSWORD);

@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Auth;
 
 class TestLogin extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $arr = [
             'email' => 'kinphan189@gmail.com',
             'password' => '123456'
         ];
 
-        if(Auth::attempt($arr)) {
+        if (Auth::attempt($arr)) {
             echo "acb";
         } else {
             echo "asdas";

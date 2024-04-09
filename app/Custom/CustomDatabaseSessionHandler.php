@@ -9,9 +9,7 @@ class CustomDatabaseSessionHandler extends DatabaseSessionHandler
 {
     protected function addUserInformation(&$payload)
     {
-        // dd("asda");
         if ($this->container->bound(Guard::class)) {
-
             $payload['user_id'] = $this->userId();
             $payload['sites'] = 'admin';
         }
