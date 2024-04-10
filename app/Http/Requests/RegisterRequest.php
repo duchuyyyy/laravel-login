@@ -29,6 +29,7 @@ class RegisterRequest extends FormRequest
                 'required',
                 'string',
             ],
+            'role' => ['required', 'string', 'in:admin,user'],
         ];
     }
 }

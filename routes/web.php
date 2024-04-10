@@ -17,5 +17,3 @@ use App\Http\Controllers\TestLogin;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/view', [TestLogin::class, 'index']);

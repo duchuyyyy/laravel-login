@@ -9,16 +9,18 @@ use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-class LoginController extends Controller
+class AdminLoginController extends Controller
 {
     use ApiResponseTrait;
 
     public function __invoke(LoginRequest $request)
     {
         $user = $this->findUserByEmail($request->email);
-        CommonFunction::existingSession($user, 'user');
+        $this->isRoleAdmin($user);
+        CommonFunction::existingSession($user, 'admin');
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
@@ -29,7 +31,7 @@ class LoginController extends Controller
 
             return $this->successWithData($user);
         } else {
-            throw new BadRequestHttpException(MessageConstant::INCORRECT_PASSWORD);
+            throw new BadRequestException(MessageConstant::INCORRECT_PASSWORD);
         }
     }
 
@@ -37,8 +39,15 @@ class LoginController extends Controller
     {
         $user = User::where("email", $email)->first();
         if (!$user) {
-            throw new BadRequestHttpException(MessageConstant::ACCOUNT_IS_NOT_EXISTED);
+            throw new BadRequestException(MessageConstant::ACCOUNT_IS_NOT_EXISTED);
         }
         return $user;
+    }
+
+    private function isRoleAdmin($user)
+    {
+        if ($user->role != "admin") {
+            throw new AccessDeniedHttpException(MessageConstant::FORBIDDEN);
+        }
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
@@ -19,9 +20,11 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-//Register 
+//Register
 Route::post("/register", RegisterController::class);
 
 
 //Login
-Route::post("/login", LoginController::class);
+Route::post("/users/login", LoginController::class);
+
+Route::post("/admins/login", AdminLoginController::class);

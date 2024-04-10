@@ -13,4 +13,6 @@ class MessageConstant
     public const SESSION_IS_EXISTING = "Session is existing!";
 
     public const SESSION_EXPIRED = "Session is expired!";
+
+    public const FORBIDDEN = "Forbidden!";
 }
