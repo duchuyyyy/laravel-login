@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Custom\CustomDatabaseSessionHandler;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Session\DatabaseSessionHandler;
+use Illuminate\Support\Facades\Session;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +25,14 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        Session::resolved(function ($session) {
+            $session->extend('customdriver', function ($app) {
+                $table = $app['config']['session.table'];
+                $lifetime = $app['config']['session.lifetime'];
+                $connection = $app['db']->connection($app['config']['session.connection']);
+                return new CustomDatabaseSessionHandler($connection, $table, $lifetime, $app);
+            });
+        });
     }
 }
