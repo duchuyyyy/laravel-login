@@ -9,8 +9,8 @@ use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AdminLoginController extends Controller
 {
@@ -22,8 +22,8 @@ class AdminLoginController extends Controller
         $this->isRoleAdmin($user);
         CommonFunction::existingSession($user, 'admin');
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
+        if (Auth::guard('custom')->attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::guard('custom')->user();
 
             $sessionId = Session::getId();
             CommonFunction::setSessionStartAt($user);
@@ -31,7 +31,7 @@ class AdminLoginController extends Controller
 
             return $this->successWithData($user);
         } else {
-            throw new BadRequestException(MessageConstant::INCORRECT_PASSWORD);
+            throw new BadRequestHttpException(MessageConstant::INCORRECT_PASSWORD);
         }
     }
 
@@ -39,7 +39,7 @@ class AdminLoginController extends Controller
     {
         $user = User::where("email", $email)->first();
         if (!$user) {
-            throw new BadRequestException(MessageConstant::ACCOUNT_IS_NOT_EXISTED);
+            throw new BadRequestHttpException(MessageConstant::ACCOUNT_IS_NOT_EXISTED);
         }
         return $user;
     }
