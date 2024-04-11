@@ -43,6 +43,10 @@ return [
         'api' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+        'custom' => [
+            'driver' => 'custom',
+            'provider' => 'users',
         ]
     ],
 
