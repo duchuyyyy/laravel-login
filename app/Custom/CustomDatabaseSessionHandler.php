@@ -4,30 +4,24 @@ namespace App\Custom;
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Session\DatabaseSessionHandler;
+use Illuminate\Support\Facades\Auth;
 
 class CustomDatabaseSessionHandler extends DatabaseSessionHandler
 {
-    protected $role;
-
 
     protected function addUserInformation(&$payload)
     {
         if ($this->container->bound(Guard::class)) {
-            $payload['user_id'] = $this->userId();
-            $payload['sites'] = $this->getRoleUser();
-        }
-
+            if (Auth::check()) {
+                $payload['user_id'] = $this->userId();
+                $payload['sites'] = 'user';
+            }
+            if (Auth::guard('custom')->check()) {
+                $user = Auth::guard('custom')->user();
+                $payload['user_id'] = $user->id;
+                $payload['sites'] = 'admin';
+            }
+        } 
         return $this;
-    }
-
-    private function getRoleUser()
-    {
-        $user = $this->container->make(Guard::class)->user();
-
-        if ($user) {
-            return $user->role;
-        }
-
-        return null;
     }
 }

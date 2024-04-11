@@ -5,8 +5,10 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Custom\CustomDatabaseSessionHandler;
+use Illuminate\Auth\SessionGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Session\DatabaseSessionHandler;
+use Illuminate\Session\SessionManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,6 +27,13 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Auth::extend('custom', function ($app, $name, array $config) {
+            $userProvider = $app['auth']->createUserProvider($config['provider']);
+            $sessionManager = $app->make(SessionManager::class);
+            $session = new SessionGuard($name, $userProvider, $sessionManager->driver());
+            return $session;
+        });
+
 
         Session::resolved(function ($session) {
             $session->extend('customdriver', function ($app) {
