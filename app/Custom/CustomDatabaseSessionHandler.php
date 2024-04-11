@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomDatabaseSessionHandler extends DatabaseSessionHandler
 {
-
     protected function addUserInformation(&$payload)
     {
         if ($this->container->bound(Guard::class)) {
@@ -21,7 +20,7 @@ class CustomDatabaseSessionHandler extends DatabaseSessionHandler
                 $payload['user_id'] = $user->id;
                 $payload['sites'] = 'admin';
             }
-        } 
+        }
         return $this;
     }
 }
